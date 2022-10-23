@@ -1,0 +1,17 @@
+name: lecture
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9
+  - jupyter
+  - numpy
+  - matplotlib
+  - seaborn
+  - pytorch
+  - cudatoolkit=11.3
+  - torchvision
+  - jupyterlab
+  - pip:
+    - torchtext
+    - torchaudio

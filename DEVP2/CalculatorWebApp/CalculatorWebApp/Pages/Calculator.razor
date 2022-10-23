@@ -1,0 +1,100 @@
+﻿@page "/calculator"
+@using CalculatorWebApp.CalculatorLogic
+
+<h3>Calculator</h3>
+
+<div class="row">
+	<input @onkeydown:preventDefault="true"
+		   @onkeypress:preventDefault="true" 
+		   @onkeyup:preventDefault="true"
+		   @onkeyup="InputTriggered" value="@Input" />
+	<div>Current selected: @(Index is not null ? Index : Sign)</div>
+</div>
+
+<div class="row">
+	<div class="row">
+		<div class="col-md-3 gd gd-button gd-number border border-primary rounded d-flex justify-content-center align-items-center" @onmouseover="MouseOver7" @onmouseout="MouseOut">7</div>
+		<div class="col-md-3 gd gd-button gd-number border border-primary rounded d-flex justify-content-center align-items-center" @onmouseover="MouseOver8" @onmouseout="MouseOut">8</div>		
+		<div class="col-md-3 gd gd-button gd-number border border-primary rounded d-flex justify-content-center align-items-center" @onmouseover="MouseOver9" @onmouseout="MouseOut">9</div>		
+		<div class="col-md-3 gd gd-button gd-number border border-primary rounded d-flex justify-content-center align-items-center" @onmouseover="MouseOverDivide" @onmouseout="MouseOut">/</div>		
+	</div>
+	<div class="row">
+		<div class="col-md-3 gd gd-button gd-number border border-primary rounded d-flex justify-content-center align-items-center" @onmouseover="MouseOver4" @onmouseout="MouseOut">4</div>		
+		<div class="col-md-3 gd gd-button gd-number border border-primary rounded d-flex justify-content-center align-items-center" @onmouseover="MouseOver5" @onmouseout="MouseOut">5</div>		
+		<div class="col-md-3 gd gd-button gd-number border border-primary rounded d-flex justify-content-center align-items-center" @onmouseover="MouseOver6" @onmouseout="MouseOut">6</div>		
+		<div class="col-md-3 gd gd-button gd-number border border-primary rounded d-flex justify-content-center align-items-center" @onmouseover="MouseOverMultiply" @onmouseout="MouseOut">x</div>		
+	</div>
+	<div class="row">
+		<div class="col-md-3 gd gd-button gd-number border border-primary rounded d-flex justify-content-center align-items-center" @onmouseover="MouseOver1" @onmouseout="MouseOut">1</div>		
+		<div class="col-md-3 gd gd-button gd-number border border-primary rounded d-flex justify-content-center align-items-center" @onmouseover="MouseOver2" @onmouseout="MouseOut">2</div>		
+		<div class="col-md-3 gd gd-button gd-number border border-primary rounded d-flex justify-content-center align-items-center" @onmouseover="MouseOver3" @onmouseout="MouseOut">3</div>		
+		<div class="col-md-3 gd gd-button gd-number border border-primary rounded d-flex justify-content-center align-items-center" @onmouseover="MouseOverPlus" @onmouseout="MouseOut">+</div>		
+	</div>																														   
+	<div class="row">																											   
+		<div class="col-md-6 gd gd-button gd-number border border-primary rounded d-flex justify-content-center align-items-center" @onmouseover="MouseOverEqual" @onmouseout="MouseOut"> = </div>
+		<div class="col-md-3 gd gd-button gd-number border border-primary rounded d-flex justify-content-center align-items-center" @onmouseover="MouseOverClear" @onmouseout="MouseOut">Clear</div>
+		<div class="col-md-3 gd gd-button gd-number border border-primary rounded d-flex justify-content-center align-items-center" @onmouseover="MouseOverMinus" @onmouseout="MouseOut">-</div>
+	</div>
+</div>
+
+
+@code {
+	Operation Operation { get; set; }
+	string Input = string.Empty;
+	int? Index { get; set; }
+	OperationSign Sign { get; set; }
+	void MouseOver1(MouseEventArgs e) { Index = 1; }
+	void MouseOver2(MouseEventArgs e) { Index = 2; }
+	void MouseOver3(MouseEventArgs e) { Index = 3; }
+	void MouseOver4(MouseEventArgs e) { Index = 4; }
+	void MouseOver5(MouseEventArgs e) { Index = 5; }
+	void MouseOver6(MouseEventArgs e) { Index = 6; }
+	void MouseOver7(MouseEventArgs e) { Index = 7; }
+	void MouseOver8(MouseEventArgs e) { Index = 8; }
+	void MouseOver9(MouseEventArgs e) { Index = 9; }
+	void MouseOverPlus(MouseEventArgs e) { Sign = OperationSign.Plus; }
+	void MouseOverMinus(MouseEventArgs e) { Sign = OperationSign.Minus; }
+	void MouseOverDivide(MouseEventArgs e) { Sign = OperationSign.Divide; }
+	void MouseOverMultiply(MouseEventArgs e) { Sign = OperationSign.Multiply; }
+	void MouseOverEqual(MouseEventArgs e) { Sign = OperationSign.Equals; }
+	void MouseOverClear(MouseEventArgs e) { Sign = OperationSign.Clear; }
+	void MouseOut(MouseEventArgs e) { Sign = OperationSign.None; Index = null; }
+	void InputTriggered(KeyboardEventArgs e)
+	{  
+		if(Index is not null)
+		{
+			Input += Index.Value ;
+		}
+		else
+		{
+			switch (Sign)
+			{
+				case OperationSign.Plus:
+					Operation = new AddOperation(double.Parse(Input), Operation);
+					break;
+
+				case OperationSign.Minus:
+					Operation = new MinusOperation(double.Parse(Input), Operation);
+					break;
+
+				case OperationSign.Divide:
+					Operation = new DivideOperation(double.Parse(Input), Operation);
+					break;
+				case OperationSign.Multiply:
+					Operation = new MultiplyOperation(double.Parse(Input), Operation);
+					break;
+				case OperationSign.Equals:
+					Input = Operation.Eval().ToString();
+					break;
+				case OperationSign.Clear:
+					Operation = new NumberOperation(0);
+					break;
+				case OperationSign.None:
+					break;
+			}
+
+			Input = string.Empty;
+
+		}
+	}
+}

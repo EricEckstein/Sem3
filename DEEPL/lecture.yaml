@@ -1,7 +1,6 @@
 name: lecture
 channels:
   - conda-forge
-  - pytorch
   - defaults
 dependencies:
   - python=3.9
@@ -10,10 +9,9 @@ dependencies:
   - matplotlib
   - seaborn
   - pytorch
-  - torchaudio
   - cudatoolkit=11.3
   - torchvision
-  - torchtext
   - jupyterlab
-  
-prefix: /home/hubert/miniconda3/envs/lecture
+  - pip:
+    - torchtext
+    - torchaudio

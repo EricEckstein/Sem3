@@ -1,0 +1,29 @@
+.gd{
+
+}
+.gd-button {
+    height: 20.5vh;
+    position: relative;
+    display: block;
+    color: white;
+    font-size: 25px;
+    overflow: hidden;
+    transition: 0.25s all ease;
+    color: #0071c1;
+}
+.gd-button::before{
+    background: #00ff215c;
+    content: "";
+    position: absolute;
+    top:50%;
+    left: 50%;
+    width: 0;
+    height: 100%;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    transition: all 1.6s ease;
+}
+
+.gd-button:hover::before {
+    width: 100%;
+}

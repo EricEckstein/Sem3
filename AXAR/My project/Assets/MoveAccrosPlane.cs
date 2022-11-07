@@ -5,10 +5,10 @@ using UnityEngine;
 public class MoveAccrosPlane : MonoBehaviour
 {
     GameObject turtle;
-    GameObject grassPlane;
     Animator animator;
     Vector3 _movement;
     float lerpDuration = 0.5f;
+    float moveDuration = 3.5f;
     bool rotating;
     bool direction = true;
     bool _walking;
@@ -18,7 +18,6 @@ public class MoveAccrosPlane : MonoBehaviour
     {
         turtle = GameObject.FindGameObjectWithTag("Turtle");
         animator = turtle.GetComponent<Animator>();
-        grassPlane = GameObject.FindGameObjectWithTag("Plane");
         _movement = new Vector3(0, 0, 0.001f);
         _walking = false;
     }
@@ -38,15 +37,14 @@ public class MoveAccrosPlane : MonoBehaviour
                 animator.Play("Idle");
             }
         }
-        if(!rotating 
-            &&(    turtle.transform.position.z < -3 &&  direction 
-                || turtle.transform.position.z > 3 && !direction))
+        if(!rotating && !_walking)
         {
             rotating = true;
             StartCoroutine(Rotate180());
         }
-        if (_walking && !rotating)
+        if (!_walking )
         {
+            StartCoroutine(Move());
             turtle.transform.Translate(_movement);
         }
     }
@@ -56,6 +54,23 @@ public class MoveAccrosPlane : MonoBehaviour
         rotating = true;
         float timeElapsed = 0;
         Quaternion startRotation = transform.rotation;
+        Quaternion targetRotation = transform.rotation * Quaternion.Euler(0, 180, 0);
+        while (timeElapsed < lerpDuration)
+        {
+            transform.rotation = Quaternion.Slerp(startRotation, targetRotation, timeElapsed / lerpDuration);
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+        transform.rotation = targetRotation;
+        rotating = false;
+        direction = !direction;
+    }
+
+    IEnumerator Move()
+    {
+        rotating = true;
+        float timeElapsed = 0;
+        Quaternion startRotation = _movement.dot;
         Quaternion targetRotation = transform.rotation * Quaternion.Euler(0, 180, 0);
         while (timeElapsed < lerpDuration)
         {

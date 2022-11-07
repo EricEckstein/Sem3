@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MoveAccrosPlane : MonoBehaviour
@@ -8,9 +7,8 @@ public class MoveAccrosPlane : MonoBehaviour
     Animator animator;
     Vector3 _movement;
     float lerpDuration = 0.5f;
-    float moveDuration = 3.5f;
-    bool rotating;
-    bool direction = true;
+    float moveDuration = 3f;
+    bool needRotate, needMove = false;
     bool _walking;
 
     // Start is called before the first frame update
@@ -30,28 +28,31 @@ public class MoveAccrosPlane : MonoBehaviour
             _walking = !_walking;
             if (_walking == true)
             {
+                needMove = true;
+                needRotate = false;
                 animator.Play("Walk");
             }
             else
             {
+                needMove = false;
+                needRotate = false;
                 animator.Play("Idle");
             }
         }
-        if(!rotating && !_walking)
+        if(needRotate)
         {
-            rotating = true;
+            needRotate = false;
             StartCoroutine(Rotate180());
         }
-        if (!_walking )
+        if (needMove)
         {
+            needMove = false;
             StartCoroutine(Move());
-            turtle.transform.Translate(_movement);
         }
     }
 
     IEnumerator Rotate180()
     {
-        rotating = true;
         float timeElapsed = 0;
         Quaternion startRotation = transform.rotation;
         Quaternion targetRotation = transform.rotation * Quaternion.Euler(0, 180, 0);
@@ -62,24 +63,18 @@ public class MoveAccrosPlane : MonoBehaviour
             yield return null;
         }
         transform.rotation = targetRotation;
-        rotating = false;
-        direction = !direction;
+        needMove = true;
     }
 
     IEnumerator Move()
     {
-        rotating = true;
         float timeElapsed = 0;
-        Quaternion startRotation = _movement.dot;
-        Quaternion targetRotation = transform.rotation * Quaternion.Euler(0, 180, 0);
-        while (timeElapsed < lerpDuration)
+        while (timeElapsed < moveDuration)
         {
-            transform.rotation = Quaternion.Slerp(startRotation, targetRotation, timeElapsed / lerpDuration);
-            timeElapsed += Time.deltaTime;
+            transform.Translate(0,0,0.1f* Time.deltaTime);
+            timeElapsed = timeElapsed +  Time.deltaTime;
             yield return null;
         }
-        transform.rotation = targetRotation;
-        rotating = false;
-        direction = !direction;
+        needRotate = true;
     }
 }

@@ -1,0 +1,3 @@
+https://github.com/suragnair/alpha-zero-general/blob/master/main.py
+https://github.com/suragnair/alpha-zero-general/blob/master/othello/OthelloGame.py
+https://github.com/suragnair/alpha-zero-general/blob/master/othello/pytorch/OthelloNNet.py

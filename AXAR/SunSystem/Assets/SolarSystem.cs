@@ -4,11 +4,17 @@ public class SolarSystem : MonoBehaviour
 {
 	//real value of gravitational constant is 6.67408 × 10-11
 	//can increase to make thing go faster instead of increase timestep of Unity
-	readonly float G = 0.1f;
-	GameObject[] celestials;
 
 	[SerializeField]
+	float G = 0.1f;
+
+	GameObject[] celestials;
+
 	bool IsElipticalOrbit = false;
+
+
+	[SerializeField]
+	float TimeScaler = 1f;
 
 	// Start is called before the first frame update
 	void Start()
@@ -21,6 +27,7 @@ public class SolarSystem : MonoBehaviour
 	// Update is called once per frame
 	void FixedUpdate()
 	{
+		Time.timeScale = TimeScaler;
 		Gravity();
 	}
 
